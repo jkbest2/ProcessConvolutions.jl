@@ -28,31 +28,31 @@ type GaussianProcessConvolution
     knot_values::Array
     dim::Integer
     nknot::Integer
-end
-    # GaussianProcessConvolution(knot_locs::Array, knot_values::vector) =
-    #     new(knot_locs, knot_values, size(knot_locs)[1], size(knot_locs)[2])
-# end
-
-nknot(GPC::GaussianProcessConvolution) = length(GPC.knot_values)
-
-#------------------------------------------------------------------------------
-# Convolution kernels
-abstract AbstractConvolutionKernel
-
-type SquaredExponentialKernel <: AbstractConvolutionKernel
-    Σ::AbstractPDMat
-
-    SquaredExponentialKernel(Σ::AbstractPDMat) = new(Σ)
-    SquaredExponentialKernel(Σ::Vector) = new(PDiagMat(Σ))
-    SquaredExponentialKernel(Σ::Array) = new(PDMat(Σ))
+    GaussianProcessConvolution(knot_locs::Array, knot_values::Vector) =
+      new(knot_locs,
+          knot_values,
+          size(knot_locs, 2),
+          size(knot_locs, 1))
+    GaussianProcessConvolution(knot_locs::Array, dist::UnivariateDistribution) =
+      new(knot_locs,
+          rand(dist, size(knot_locs, 1)),
+          size(knot_locs, 2),
+          size(knot_locs, 1))
+    GaussianProcessConvolution(knot_locs::Array) =
+      GaussianProcessConvolution(knot_locs, Normal(0, 1))
 end
 
-## Get dimensionality of kernel
-dim(kern::AbstractConvolutionKernel) = kern.Σ.dim
+knot_locs(GPC::GaussianProcessConvolution) = GPC.knot_locs
+knot_values(GPC::GaussianProcessConvolution) = GPC.knot_values
+nknot(GPC::GaussianProcessConvolution) = GPC.nknot
+dim(GPC::GaussianProcessConvolution) = GPC.dim
 
 #------------------------------------------------------------------------------
 # Putting them together
-function predict(GPC::GaussianProcessConvolution, kern::AbstractConvolutionKernel, new_loc::Array)        nnew = size(new_loc, 2)
+function predict(GPC::GaussianProcessConvolution,
+                 kern::AbstractConvolutionKernel,
+                 new_loc::Array)
+
     nnew = size(new_loc, 1)
     new_val = zeros(nnew)
 
