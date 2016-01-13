@@ -53,7 +53,7 @@ dim(kern::AbstractConvolutionKernel) = kern.Σ.dim
 #------------------------------------------------------------------------------
 # Putting them together
 function predict(GPC::GaussianProcessConvolution, kern::AbstractConvolutionKernel, new_loc::Array)        nnew = size(new_loc, 2)
-
+    nnew = size(new_loc, 1)
     new_val = zeros(nnew)
 
     for l in 1:nnew
