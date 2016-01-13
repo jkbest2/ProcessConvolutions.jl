@@ -11,7 +11,7 @@ dim(kern::AbstractConvolutionKernel) = kern.Σ.dim
 
 ## Calculate unnormalized weights
 function conv_wt(kern::SquaredExponentialKernel, d::Array)
-    if size(d)[1] != dim(kern)
+    if size(d, 1) != dim(kern)
         throw(DimensionMismatch)
     end
     exp(-0.5 * invquad(kern.Σ, d))
