@@ -13,13 +13,10 @@ export
     # Basic type
     GaussianProcessConvolution,
     # Methods
-    dim,		# get dimensionality of process or kernel
-    unnorm_wt,	# Get unnormalized weights for a new location
-    norm_wt,	# Get normalized weights for a new location
-    nknot,	# Return number of knots
-    predict,
-    unorm_predict
-
+    dim,		  # get dimensionality of process or kernel
+    conv_wt,	# Get convolution weights for a new location
+    nknot,	  # Return number of knots
+    predict   # Give value of GP at new locations
 
 # include convolution kernels
 include("ConvolutionKernels.jl")
@@ -53,37 +50,17 @@ end
 ## Get dimensionality of kernel
 dim(kern::AbstractConvolutionKernel) = kern.Σ.dim
 
-## Normalize weights so they add to 1
-function norm_wt(kern::AbstractConvolutionKernel, d::Array)
-    un_wt = zeros(size(d, 2))
-    un_wt = unnorm_wt(kern, d)
-    un_wt ./ sum(un_wt)
-end
-
 #------------------------------------------------------------------------------
 # Putting them together
-function predict(GPC::GaussianProcessConvolution, kern::AbstractConvolutionKernel, new_loc::Array)
+function predict(GPC::GaussianProcessConvolution, kern::AbstractConvolutionKernel, new_loc::Array)        nnew = size(new_loc, 2)
 
-        nnew = size(new_loc, 2)
-        new_val = zeros(nnew)
+    new_val = zeros(nnew)
 
-        for l in 1:nnew
-                d = GPC.knot_locs' .- new_loc[:, l]
-                new_val[l] = dot(norm_wt(kern, d), GPC.knot_values)
-        end
-        new_val
-end
-
-function unorm_predict(GPC::GaussianProcessConvolution, kern::AbstractConvolutionKernel, new_loc::Array)
-
-        nnew = size(new_loc, 2)
-        new_val = zeros(nnew)
-
-        for l in 1:nnew
-                d = GPC.knot_locs' .- new_loc[:, l]
-                new_val[l] = dot(unnorm_wt(kern, d), GPC.knot_values)
-        end
-        new_val
+    for l in 1:nnew
+      d = GPC.knot_locs' .- new_loc'[:, l]
+      new_val[l] = dot(conv_wt(kern, d), GPC.knot_values)
+    end
+    new_val
 end
 
 end  # module

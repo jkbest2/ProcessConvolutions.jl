@@ -10,7 +10,7 @@ end
 dim(kern::AbstractConvolutionKernel) = kern.Σ.dim
 
 ## Calculate unnormalized weights
-function unnorm_wt(kern::SquaredExponentialKernel, d::Array)
+function conv_wt(kern::SquaredExponentialKernel, d::Array)
     if size(d)[1] != dim(kern)
         throw(DimensionMismatch)
     end
