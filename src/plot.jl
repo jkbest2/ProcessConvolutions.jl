@@ -1,7 +1,7 @@
 using PyPlot
 import PyPlot: contourf
 
-function contourf(GPC::GaussianProcessConvolutions, kern::AbstractConvolutionKernel; levels = 7)
+function contourf(GPC::GaussianProcessConvolutions, kern::AbstractConvolutionKernel; levels = 7, transform = identity)
     ndim = dim(GPC)
     if ndim != dim(kern)
         throw(DimensionMismatch)
@@ -20,6 +20,8 @@ function contourf(GPC::GaussianProcessConvolutions, kern::AbstractConvolutionKer
     y_interp = linspace(ymax, ymin, n_y)
     
     interp = Array(Float64, n_y, n_x)
+    
+    interp = transform(interp)
     
     for i in 1:n_x
         for j in 1:n_y
