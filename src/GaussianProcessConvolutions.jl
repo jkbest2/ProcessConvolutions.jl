@@ -12,6 +12,7 @@ export
     SquaredExponentialKernel,
     # Basic type
     GaussianProcessConvolution,
+    GaussianProcessSample,
     # Methods
     dim,		    # get dimensionality of process or kernel
     conv_wt,	    # Get convolution weights for a new location
