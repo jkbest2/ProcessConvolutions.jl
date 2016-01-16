@@ -63,4 +63,6 @@ function predict(GPC::GaussianProcessConvolution,
     new_val
 end
 
+# Include efficient sample storage type
+include("sampling.jl")
 end  # module
