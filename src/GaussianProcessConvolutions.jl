@@ -13,10 +13,11 @@ export
     # Basic type
     GaussianProcessConvolution,
     # Methods
-    dim,		  # get dimensionality of process or kernel
-    conv_wt,	# Get convolution weights for a new location
-    nknot,	  # Return number of knots
-    predict   # Give value of GP at new locations
+    dim,		    # get dimensionality of process or kernel
+    conv_wt,	    # Get convolution weights for a new location
+    nknot,	        # Return number of knots
+    predict,        # Give value of GP at new locations
+    contourf        # Interpolate and plot GP
 
 # include convolution kernels
 include("ConvolutionKernels.jl")
@@ -63,4 +64,6 @@ function predict(GPC::GaussianProcessConvolution,
     new_val
 end
 
+# Add plotting funcitons
+include("plot.jl")
 end  # module
