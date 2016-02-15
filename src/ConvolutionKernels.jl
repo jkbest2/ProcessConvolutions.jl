@@ -1,6 +1,6 @@
 abstract AbstractConvolutionKernel
 
-type SquaredExponentialKernel <: AbstractConvolutionKernel
+immutable SquaredExponentialKernel <: AbstractConvolutionKernel
     Σ::AbstractPDMat
     SquaredExponentialKernel(Σ::AbstractPDMat) = new(Σ)
     SquaredExponentialKernel(Σ::Vector) = new(PDiagMat(Σ))
@@ -9,10 +9,11 @@ end
 
 dim(kern::AbstractConvolutionKernel) = kern.Σ.dim
 
-## Calculate unnormalized weights
+## Calculate weights
 function conv_wt(kern::SquaredExponentialKernel, d::Array)
     if size(d, 1) != dim(kern)
         throw(DimensionMismatch)
     end
     exp(-0.5 * invquad(kern.Σ, d))
 end
+
