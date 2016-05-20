@@ -76,9 +76,9 @@ function knot_wt(GPC::GaussianProcessConvolution,
                  kern::AbstractConvolutionKernel,
                  new_locs::Array{Float64})
     nloc = size(new_locs, 1)
-    nknot = nknot(GPC)
+    nk = nknot(GPC)
 
-    k_wt = Array{Float64, 2}(nloc, nknot)
+    k_wt = Array{Float64, 2}(nloc, nk)
     for l in 1:nloc
         k_wt[l, :] = conv_wt(kern, knot_locs(GPC)' .- new_locs[l, :]')'
     end
