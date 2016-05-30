@@ -72,16 +72,23 @@ function predict(GPC::GaussianProcessConvolution,
     knot_wt * GPC.knot_values
 end
 
-## Calculate knot weight matrix
-function knot_wt(GPC::GaussianProcessConvolution,
+"""
+    knot_wt(GPC::GaussianProcessConvolution,
+            kern::AbstractConvolutionKernel,
+            new_locs::Array{Float64})
+
+Calculate knot weight matrix for set of new locations. Returns one row per
+new location, one column per knot location, so knot_wt * knot_val gives the
+value of the process at new locations.
+"""
+function knot_wt(gpc::GaussianProcessConvolution,
                  kern::AbstractConvolutionKernel,
                  new_locs::Array{Float64})
     nloc = size(new_locs, 1)
-    nk = nknot(GPC)
+    k_wt = Array{Float64, 2}(nloc, nknot(gpc))
 
-    k_wt = Array{Float64, 2}(nloc, nk)
     for l in 1:nloc
-        k_wt[l, :] = conv_wt(kern, knot_locs(GPC)' .- new_locs[l, :]')'
+        k_wt[l, :] = conv_wt(kern, knot_locs(gpc)' .- new_locs[l, :]')'
     end
     k_wt
 end
