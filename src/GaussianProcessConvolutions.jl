@@ -89,6 +89,6 @@ end
 include("sampling.jl")
 
 # Add plotting funcitons
-include("plot.jl")
+# include("plot.jl")
 
 end  # module
