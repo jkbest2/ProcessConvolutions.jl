@@ -45,10 +45,12 @@ immutable GaussianProcessConvolution <: Any
       GaussianProcessConvolution(knot_locs, Normal(0, 1))
 end
 
-knot_locs(GPC::GaussianProcessConvolution) = GPC.knot_locs
-knot_values(GPC::GaussianProcessConvolution) = GPC.knot_values
-nknot(GPC::GaussianProcessConvolution) = GPC.nknot
-dim(GPC::GaussianProcessConvolution) = GPC.dim
+typealias GPC GaussianProcessConvolution
+
+knot_locs(gpc::GaussianProcessConvolution) = gpc.knot_locs
+knot_values(gpc::GaussianProcessConvolution) = gpc.knot_values
+nknot(gpc::GaussianProcessConvolution) = gpc.nknot
+dim(gpc::GaussianProcessConvolution) = gpc.dim
 
 #------------------------------------------------------------------------------
 # Putting them together
