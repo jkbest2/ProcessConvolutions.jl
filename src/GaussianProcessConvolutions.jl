@@ -26,11 +26,14 @@ include("ConvolutionKernels.jl")
 
 #----------------------------------------------------------------------------
 # Basic type
+abstract AbstractProcessConvolution <: Any
+
 immutable GaussianProcessConvolution <: Any
     knot_locs::AbstractArray
     knot_values::AbstractArray
     dim::Integer
     nknot::Integer
+
     GaussianProcessConvolution(knot_locs::AbstractArray, knot_values::Vector) =
       new(knot_locs,
           knot_values,
