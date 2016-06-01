@@ -65,13 +65,25 @@ immutable ConstantProcess <: AbstractProcess
     v::Float
 end
 
-typealias GPC GaussianProcessConvolution
+#-----------------------------------------------------------------------------
+abstract PredictiveProcessConvolution
 
-knot_locs(gpc::GaussianProcessConvolution) = gpc.knot_locs
-knot_values(gpc::GaussianProcessConvolution) = gpc.knot_values
-nknot(gpc::GaussianProcessConvolution) = gpc.nknot
-dim(gpc::GaussianProcessConvolution) = gpc.dim
+type ContinuousPredictivePC <: PredictiveProcessConvolution
+    ProcConv::AbstractProcess
+    ConvKern::AbstractConvolutionKernel
+    PredLocs::Array{Float}
+    KnotWt::Array{Float}
+    Transform::Function
+end
 
+type DiscretePredictivePC{T <: Any} <: PredictiveProcessConvolution
+    KnotLocs::Array{Float}
+    Process::Array{T}
+    KnotValue::Dict{T, Array{Float}}
+    ConvKernel::Dict{T, AbstractConvolutionKernel}
+    KnotWt::Dict{AbstractConvolutionKernel, Array{Float}}
+    Transform::Function
+end
 #------------------------------------------------------------------------------
 # Putting them together
 function predict(pc::ProcessConvolution,
