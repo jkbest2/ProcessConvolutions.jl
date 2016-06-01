@@ -21,6 +21,12 @@ export
     predict,        # Give value of GP at new locations
     contourf        # Interpolate and plot GP
 
+if WORD_SIZE == 64
+    Float = Float64
+else
+    Float = Float32
+end
+
 # include convolution kernels
 include("ConvolutionKernels.jl")
 
