@@ -1,11 +1,13 @@
 abstract AbstractConvolutionKernel
 
-immutable SquaredExponentialKernel <: AbstractConvolutionKernel
+immutable GaussianKernel <: AbstractConvolutionKernel
     Σ::AbstractPDMat
     SquaredExponentialKernel(Σ::AbstractPDMat) = new(Σ)
     SquaredExponentialKernel(Σ::Vector) = new(PDiagMat(Σ))
     SquaredExponentialKernel(Σ::Array) = new(PDMat(Σ))
 end
+
+typealias SquaredExponentialKernel GaussianKernel
 
 dim(kern::AbstractConvolutionKernel) = kern.Σ.dim
 
@@ -16,4 +18,5 @@ function conv_wt(kern::SquaredExponentialKernel, d::Array)
     end
     exp(-0.5 * invquad(kern.Σ, d))
 end
+
 

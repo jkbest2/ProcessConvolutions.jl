@@ -1,4 +1,4 @@
-The GaussianProcessConvolutions.jl package is licensed under the MIT "Expat" License:
+The ProcessConvolutions.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2016: John Best.
 >
