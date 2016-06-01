@@ -22,7 +22,6 @@ export
     knot_wt,        # Return matrix of conv weights for new locations
     nknot,	        # Return number of knots
     predict,        # Give value of GP at new locations
-    contourf        # Interpolate and plot GP
 
 if WORD_SIZE == 64
     Float = Float64
@@ -124,8 +123,5 @@ end
 
 # Include efficient sample storage type
 include("sampling.jl")
-
-# Add plotting funcitons
-# include("plot.jl")
 
 end  # module
