@@ -44,8 +44,19 @@ immutable ProcessConvolution <: AbstractProcess
           rand(dist, size(knot_locs, 1)),
           size(knot_locs, 2),
           size(knot_locs, 1))
-    GaussianProcessConvolution(knot_locs::AbstractArray) =
-      GaussianProcessConvolution(knot_locs, Normal(0, 1))
+    ProcessConvolution(knot_locs::AbstractArray) =
+      ProcessConvolution(knot_locs, Normal(0, 1))
+end
+
+knot_locs(pc::ProcessConvolution) = pc.knot_locs
+knot_values(pc::ProcessConvolution) = pc.knot_values
+nknot(pc::ProcessConvolution) = pc.nknot
+dim(pc::ProcessConvolution) = pc.dim
+
+immutable ZeroProcess <: AbstractProcess end
+
+immutable ConstantProcess <: AbstractProcess
+    v::Float
 end
 
 typealias GPC GaussianProcessConvolution
