@@ -80,12 +80,72 @@ end
 
 type DiscretePredictivePC{T <: Any} <: PredictiveProcessConvolution
     KnotLocs::Array{Float}
+    PredLocs::Array{Float}
     Process::Array{T}
     KnotValue::Dict{T, Array{Float}}
     ConvKernel::Dict{T, AbstractConvolutionKernel}
     KnotWt::Dict{AbstractConvolutionKernel, Array{Float}}
-    Transform::Function
 end
+
+# Outer constructor for simplest case: no knot values specified, one
+# shared kernel for all processes.
+function DiscretePredictivePC(knotlocs::Array{Float},
+                              predlocs::Array{Float},
+                              processlist::Vector{T},
+                              kernel::AbstractConvolutionKernel)
+    nkts = size(knotlocs, 1)
+    npred = size(predlocs, 1)
+    nproc = length(processlist)
+
+    kern = Dict{T, AbstractConvolutionKernel}()
+    for proc in processlist
+        kern[proc] = kernel
+    end
+
+    kv = Dict{T, Vector{Float}}()
+    for proc in processlist
+        kv[proc] = randn(nkts)
+    end
+
+    kw = Dict{AbstractConvolutionKernel,
+              Array{Float}}(kernel => knot_wt(knotlocs, kernel, predlocs))
+
+    DiscretePredictivePC(knotlocs,
+                         predlocs,
+                         processlist,
+                         kv,
+                         kw)
+end
+
+# Outer constructor for different kernel case: no knot values specified, one
+# shared kernel for all processes.
+function DiscretePredictivePC(knotlocs::Array{Float},
+                              predlocs::Array{Float},
+                              kernel::Dict{T, AbstractConvolutionKernel})
+
+    processlist = collect(keys(kernel))
+    nkts = size(knotlocs, 1)
+    npred = size(predlocs, 1)
+    nproc = length(processlist)
+
+    kv = Dict{T, Vector{Float}}()
+    for proc in processlist
+        kv[proc] = randn(nkts)
+    end
+
+    kw = Dict{AbstractConvolutionKernel,
+              Array{Float64, 2}}()
+    for kern in unique(values(kernel))
+        kw[kern] = knot_wt(knotlocs, kern, predlocs)
+    end
+
+    DiscretePredictivePC(knotlocs,
+                         predlocs,
+                         processlist,
+                         kv,
+                         kw)
+end
+
 #------------------------------------------------------------------------------
 # Putting them together
 function predict(pc::ProcessConvolution,
@@ -117,6 +177,19 @@ function knot_wt(pc::ProcessConvolution,
     k_wt = Array{Float64, 2}(nloc, nk)
     for l in 1:nloc
         k_wt[l, :] = conv_wt(kern, knot_locs(pc)' .- new_locs[l, :]')'
+    end
+    k_wt
+end
+
+function knot_wt(knot_locs::Array,
+                 kern::AbstractConvolutionKernel,
+                 new_locs::Array)
+    nloc = size(new_locs, 1)
+    nk = size(knot_locs, 1)
+
+    k_wt = Array{Float64, 2}(nloc, nk)
+    for l in 1:nloc
+        k_wt[l, :] = conv_wt(kern, knot_locs' .- new_locs[l, :]')'
     end
     k_wt
 end
