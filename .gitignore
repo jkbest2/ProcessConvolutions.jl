@@ -3,4 +3,4 @@
 *.jl.mem
 .juliahistory
 .Rhistory
-*.swp
+*.sw?
