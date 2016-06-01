@@ -9,6 +9,7 @@ import PDMats: dim
 export
     # Convolution Kernels
     AbstractConvolutionKernel,
+    GaussianKernel,
     SquaredExponentialKernel,
     # Basic type
     ProcessConvolution,
