@@ -7,6 +7,7 @@ using Distributions
 using PDMats
 
 import PDMats: dim
+import Base: getindex
 
 export
     # Convolution Kernels
@@ -56,6 +57,8 @@ nknot(pc::ProcessConvolution) = pc.nknot
 dim(pc::ProcessConvolution) = pc.dim
 
 immutable ZeroProcess <: AbstractProcess end
+
+getindex(zp::ZeroProcess, inds...) = 0.0
 
 immutable ConstantProcess <: AbstractProcess
     v::Float64
