@@ -36,8 +36,7 @@ immutable ProcessConvolution{F <: AbstractFloat} <: AbstractProcess
     dim::Int
     nknot::Int
 
-    function ProcessConvolution{F <: AbstractFloat}(knot_locs::Array{F, 2},
-                                                    knot_values::Vector{F})
+    function ProcessConvolution(knot_locs, knot_values)
       new(knot_locs,
           knot_values,
           size(knot_locs, 2),
