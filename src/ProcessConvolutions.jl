@@ -21,7 +21,7 @@ export
     conv_wt,	    # Get convolution weights for a new location
     knot_wt,        # Return matrix of conv weights for new locations
     nknot,	        # Return number of knots
-    predict,        # Give value of GP at new locations
+    predict        # Give value of GP at new locations
 
 # include convolution kernels
 include("ConvolutionKernels.jl")
@@ -45,13 +45,13 @@ immutable ProcessConvolution{F <: AbstractFloat} <: AbstractProcess
     end
 end
 
-ProcessConvolution(knot_locs::AbstractArray, dist::UnivariateDistribution) =
- new(knot_locs,
-     rand(dist, size(knot_locs, 1)),
-     size(knot_locs, 2),
-     size(knot_locs, 1))
+function ProcessConvolution{F <: AbstractFloat}(knot_locs::Array{F, 2},
+                                                dist::UnivariateDistribution)
+     ProcessConvolution(knot_locs,
+                        rand(dist, size(knot_locs, 1)))
+end
 
-ProcessConvolution(knot_locs::AbstractArray) =
+ProcessConvolution{F <: AbstractFloat}(knot_locs::AbstractArray) =
     ProcessConvolution(knot_locs, Normal(0, 1))
 
 knot_locs(pc::ProcessConvolution) = pc.knot_locs
