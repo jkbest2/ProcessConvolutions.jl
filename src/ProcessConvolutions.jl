@@ -23,12 +23,6 @@ export
     nknot,	        # Return number of knots
     predict,        # Give value of GP at new locations
 
-if WORD_SIZE == 64
-    Float = Float64
-else
-    Float = Float32
-end
-
 # include convolution kernels
 include("ConvolutionKernels.jl")
 
@@ -47,14 +41,16 @@ immutable ProcessConvolution <: AbstractProcess
           knot_values,
           size(knot_locs, 2),
           size(knot_locs, 1))
-    ProcessConvolution(knot_locs::AbstractArray, dist::UnivariateDistribution) =
-      new(knot_locs,
-          rand(dist, size(knot_locs, 1)),
-          size(knot_locs, 2),
-          size(knot_locs, 1))
-    ProcessConvolution(knot_locs::AbstractArray) =
-      ProcessConvolution(knot_locs, Normal(0, 1))
 end
+
+ProcessConvolution(knot_locs::AbstractArray, dist::UnivariateDistribution) =
+ new(knot_locs,
+     rand(dist, size(knot_locs, 1)),
+     size(knot_locs, 2),
+     size(knot_locs, 1))
+
+ProcessConvolution(knot_locs::AbstractArray) =
+    ProcessConvolution(knot_locs, Normal(0, 1))
 
 knot_locs(pc::ProcessConvolution) = pc.knot_locs
 knot_values(pc::ProcessConvolution) = pc.knot_values
@@ -64,7 +60,7 @@ dim(pc::ProcessConvolution) = pc.dim
 immutable ZeroProcess <: AbstractProcess end
 
 immutable ConstantProcess <: AbstractProcess
-    v::Float
+    v::Float64
 end
 
 #-----------------------------------------------------------------------------
