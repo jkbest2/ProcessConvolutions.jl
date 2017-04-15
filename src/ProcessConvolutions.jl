@@ -30,17 +30,19 @@ include("ConvolutionKernels.jl")
 # Basic type
 abstract AbstractProcess <: Any
 
-immutable ProcessConvolution <: AbstractProcess
-    knot_locs::AbstractArray
-    knot_values::Vector
-    dim::Integer
-    nknot::Integer
+immutable ProcessConvolution{F <: AbstractFloat} <: AbstractProcess
+    knot_locs::Array{F, 2}
+    knot_values::Vector{F}
+    dim::Int
+    nknot::Int
 
-    ProcessConvolution(knot_locs::AbstractArray, knot_values::Vector) =
+    function ProcessConvolution{F <: AbstractFloat}(knot_locs::Array{F, 2},
+                                                    knot_values::Vector{F})
       new(knot_locs,
           knot_values,
           size(knot_locs, 2),
           size(knot_locs, 1))
+    end
 end
 
 ProcessConvolution(knot_locs::AbstractArray, dist::UnivariateDistribution) =
