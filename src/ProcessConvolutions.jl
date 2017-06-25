@@ -60,89 +60,89 @@ dim(pc::ProcessConvolution) = pc.dim
 
 immutable ZeroProcess <: AbstractProcess end
 
-immutable ConstantProcess <: AbstractProcess
-    v::Float64
+immutable ConstantProcess{F <: AbstractFloat} <: AbstractProcess
+    v::F
 end
 
 #-----------------------------------------------------------------------------
-abstract PredictiveProcessConvolution
-
-type ContinuousPredictivePC <: PredictiveProcessConvolution
-    ProcConv::AbstractProcess
-    ConvKern::AbstractConvolutionKernel
-    PredLocs::Array{Float}
-    KnotWt::Array{Float}
-    Transform::Function
-end
-
-type DiscretePredictivePC{T <: Any} <: PredictiveProcessConvolution
-    KnotLocs::Array{Float}
-    PredLocs::Array{Float}
-    Process::Array{T}
-    KnotValue::Dict{T, Array{Float}}
-    ConvKernel::Dict{T, AbstractConvolutionKernel}
-    KnotWt::Dict{AbstractConvolutionKernel, Array{Float}}
-end
-
-# Outer constructor for simplest case: no knot values specified, one
-# shared kernel for all processes.
-function DiscretePredictivePC(knotlocs::Array{Float},
-                              predlocs::Array{Float},
-                              processlist::Vector{T},
-                              kernel::AbstractConvolutionKernel)
-    nkts = size(knotlocs, 1)
-    npred = size(predlocs, 1)
-    nproc = length(processlist)
-
-    kern = Dict{T, AbstractConvolutionKernel}()
-    for proc in processlist
-        kern[proc] = kernel
-    end
-
-    kv = Dict{T, Vector{Float}}()
-    for proc in processlist
-        kv[proc] = randn(nkts)
-    end
-
-    kw = Dict{AbstractConvolutionKernel,
-              Array{Float}}(kernel => knot_wt(knotlocs, kernel, predlocs))
-
-    DiscretePredictivePC(knotlocs,
-                         predlocs,
-                         processlist,
-                         kv,
-                         kw)
-end
-
-# Outer constructor for different kernel case: no knot values specified, one
-# shared kernel for all processes.
-function DiscretePredictivePC(knotlocs::Array{Float},
-                              predlocs::Array{Float},
-                              kernel::Dict{T, AbstractConvolutionKernel})
-
-    processlist = collect(keys(kernel))
-    nkts = size(knotlocs, 1)
-    npred = size(predlocs, 1)
-    nproc = length(processlist)
-
-    kv = Dict{T, Vector{Float}}()
-    for proc in processlist
-        kv[proc] = randn(nkts)
-    end
-
-    kw = Dict{AbstractConvolutionKernel,
-              Array{Float64, 2}}()
-    for kern in unique(values(kernel))
-        kw[kern] = knot_wt(knotlocs, kern, predlocs)
-    end
-
-    DiscretePredictivePC(knotlocs,
-                         predlocs,
-                         processlist,
-                         kv,
-                         kw)
-end
-
+# abstract PredictiveProcessConvolution
+#
+# type ContinuousPredictivePC{F <: AbstractFloat} <: PredictiveProcessConvolution
+#     ProcConv::AbstractProcess
+#     ConvKern::AbstractConvolutionKernel
+#     PredLocs::Array{F}
+#     KnotWt::Array{F}
+#     Transform::Function
+# end
+#
+# type DiscretePredictivePC{T <: Any} <: PredictiveProcessConvolution
+#     KnotLocs::Array{F}
+#     PredLocs::Array{Float}
+#     Process::Array{T}
+#     KnotValue::Dict{T, Array{Float}}
+#     ConvKernel::Dict{T, AbstractConvolutionKernel}
+#     KnotWt::Dict{AbstractConvolutionKernel, Array{Float}}
+# end
+#
+# # Outer constructor for simplest case: no knot values specified, one
+# # shared kernel for all processes.
+# function DiscretePredictivePC(knotlocs::Array{Float},
+#                               predlocs::Array{Float},
+#                               processlist::Vector{T},
+#                               kernel::AbstractConvolutionKernel)
+#     nkts = size(knotlocs, 1)
+#     npred = size(predlocs, 1)
+#     nproc = length(processlist)
+#
+#     kern = Dict{T, AbstractConvolutionKernel}()
+#     for proc in processlist
+#         kern[proc] = kernel
+#     end
+#
+#     kv = Dict{T, Vector{Float}}()
+#     for proc in processlist
+#         kv[proc] = randn(nkts)
+#     end
+#
+#     kw = Dict{AbstractConvolutionKernel,
+#               Array{Float}}(kernel => knot_wt(knotlocs, kernel, predlocs))
+#
+#     DiscretePredictivePC(knotlocs,
+#                          predlocs,
+#                          processlist,
+#                          kv,
+#                          kw)
+# end
+#
+# # Outer constructor for different kernel case: no knot values specified, one
+# # shared kernel for all processes.
+# function DiscretePredictivePC(knotlocs::Array{Float},
+#                               predlocs::Array{Float},
+#                               kernel::Dict{T, AbstractConvolutionKernel})
+#
+#     processlist = collect(keys(kernel))
+#     nkts = size(knotlocs, 1)
+#     npred = size(predlocs, 1)
+#     nproc = length(processlist)
+#
+#     kv = Dict{T, Vector{Float}}()
+#     for proc in processlist
+#         kv[proc] = randn(nkts)
+#     end
+#
+#     kw = Dict{AbstractConvolutionKernel,
+#               Array{Float64, 2}}()
+#     for kern in unique(values(kernel))
+#         kw[kern] = knot_wt(knotlocs, kern, predlocs)
+#     end
+#
+#     DiscretePredictivePC(knotlocs,
+#                          predlocs,
+#                          processlist,
+#                          kv,
+#                          kw)
+# end
+#
 #------------------------------------------------------------------------------
 # Putting them together
 function predict(pc::ProcessConvolution,
