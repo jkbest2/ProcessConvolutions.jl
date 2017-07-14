@@ -16,7 +16,7 @@ function conv_wt(kern::SquaredExponentialKernel, d::Array)
     if size(d, 1) != dim(kern)
         throw(DimensionMismatch)
     end
-    exp(-0.5 * invquad(kern.Σ, d))
+    exp.(-0.5 * invquad(kern.Σ, d))
 end
 
 
