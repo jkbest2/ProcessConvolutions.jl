@@ -28,7 +28,7 @@ include("ConvolutionKernels.jl")
 
 #----------------------------------------------------------------------------
 # Basic type
-abstract AbstractProcess <: Any
+abstract type AbstractProcess <: Any end
 
 immutable ProcessConvolution{F <: AbstractFloat} <: AbstractProcess
     knot_locs::Array{F, 2}

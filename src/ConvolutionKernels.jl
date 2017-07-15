@@ -1,4 +1,4 @@
-abstract AbstractConvolutionKernel
+abstract type AbstractConvolutionKernel end
 
 immutable GaussianKernel <: AbstractConvolutionKernel
     Σ::AbstractPDMat
@@ -7,7 +7,7 @@ immutable GaussianKernel <: AbstractConvolutionKernel
     SquaredExponentialKernel(Σ::Array) = new(PDMat(Σ))
 end
 
-typealias SquaredExponentialKernel GaussianKernel
+const SquaredExponentialKernel = GaussianKernel
 
 dim(kern::AbstractConvolutionKernel) = kern.Σ.dim
 
